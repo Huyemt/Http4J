@@ -56,8 +56,6 @@ public class HttpRequest {
         connection.setRequestMethod(method.getMethod());
         if (config.isAutoHeaders()) {
             headers.defaultValue("User-Agent", "Http4J/1.0");
-            headers.defaultValue("Content-Type", "charset=UTF-8");
-            headers.defaultValue("Cache-Control", "no-cache");
         }
 
         headers.defaultValue("Accept", "*/*");
@@ -74,8 +72,8 @@ public class HttpRequest {
 
         if (method == Method.POST && requestBody != null && requestBody.size() > 0) {
             connection.setDoOutput(true);
-            DataOutputStream stream = new DataOutputStream(connection.getOutputStream());
-            stream.writeBytes(requestBody.toString(StandardCharsets.UTF_8));
+            OutputStream stream = connection.getOutputStream();
+            stream.write(requestBody.toString(config.isDataUrlEncode() ? StandardCharsets.UTF_8 : null).getBytes(StandardCharsets.UTF_8));
             stream.flush();
             stream.close();
         }
@@ -94,14 +92,13 @@ public class HttpRequest {
             }
 
             result = outStream.toByteArray();
-            status = connection.getResponseCode();
             inputStream.close();
             outStream.close();
         } catch (SocketTimeoutException var18) {
             result = new byte[0];
-            status = 408;
         } finally {
             connection.disconnect();
+            status = connection.getResponseCode();
         }
 
         return new HttpResponse(status, result, connection.getHeaderFields());
