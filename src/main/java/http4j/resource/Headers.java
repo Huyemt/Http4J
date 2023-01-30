@@ -32,30 +32,45 @@ public class Headers extends Resource {
         }
     }
 
+    @Override
     public Headers add(String name, Object value) {
         super.add(name.toLowerCase(), value);
         return this;
     }
 
+    @Override
     public Headers remove(String name) {
         super.remove(name.toLowerCase());
         return this;
     }
 
+    @Override
     public Headers set(String name, Object value) {
         super.set(name.toLowerCase(), value);
         return this;
     }
 
+    @Override
+    public String get(String name) {
+        return super.get(name.toLowerCase());
+    }
+
+    @Override
     public Headers defaultValue(String name, Object value) {
         super.defaultValue(name.toLowerCase(), value);
         return this;
+    }
+
+    @Override
+    public boolean contains(String name) {
+        return super.contains(name.toLowerCase());
     }
 
     public Map<String, Object> getHeaders() {
         return this.sources;
     }
 
+    @Override
     public final String toString() {
         StringBuilder builder = new StringBuilder();
 

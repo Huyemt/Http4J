@@ -50,7 +50,6 @@ public class HttpRequest {
         connection.setConnectTimeout(config.getTimeout());
         connection.setInstanceFollowRedirects(false);
         connection.setDoInput(true);
-        connection.setUseCaches(false);
         connection.setRequestMethod(method.getMethod());
         if (config.isAutoHeaders()) {
             headers.defaultValue("User-Agent", "Http4J/1.0");
