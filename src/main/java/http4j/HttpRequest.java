@@ -3,10 +3,7 @@ package http4j;
 import http4j.resource.*;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -14,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 */
 
 public class HttpRequest {
-    public final URL url;
+    public URL url;
 
     public HttpRequest(URL url) {
         this.url = url;
@@ -51,7 +48,7 @@ public class HttpRequest {
 
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setConnectTimeout(config.getTimeout());
-        connection.setInstanceFollowRedirects(config.isAllowsRedirect());
+        connection.setInstanceFollowRedirects(false);
         connection.setDoInput(true);
         connection.setUseCaches(false);
         connection.setRequestMethod(method.getMethod());
@@ -116,7 +113,23 @@ public class HttpRequest {
             status = connection.getResponseCode();
         }
 
-        return new HttpResponse(status, result, connection.getHeaderFields());
+        HttpResponse response = new HttpResponse(status, connection.getURL(), result, connection.getHeaderFields());
+
+        if (config.isAllowsRedirect()) {
+            // If there is a redirect address
+            while (response.headers.contains("Location")) {
+                // set url
+                this.url = new URL(response.headers.get("Location"));
+
+                for (HttpCookie cookie : response.cookies.getCookieMap().values()) {
+                    cookies.add(cookie);
+                }
+
+                response = send(method, headers, null, null, cookies, config);
+            }
+        }
+
+        return response;
     }
 
     public HttpResponse send(Method method, Headers headers, Params params, RequestBody requestBody, Cookies cookies) throws IOException {
