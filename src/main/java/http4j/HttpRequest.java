@@ -5,6 +5,7 @@ import http4j.resource.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
 
 /**
  * @author Huyemt
@@ -93,7 +94,16 @@ public class HttpRequest {
         int status;
         try {
             connection.connect();
-            InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+
+            InputStream inputStream;
+
+            if (connection.getContentEncoding() != null && connection.getContentEncoding().equalsIgnoreCase("gzip")) {
+                inputStream = new GZIPInputStream(connection.getInputStream());
+
+            } else {
+                inputStream = new BufferedInputStream(connection.getInputStream());
+            }
+
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
 
