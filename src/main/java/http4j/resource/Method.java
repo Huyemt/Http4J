@@ -6,7 +6,8 @@ package http4j.resource;
 
 public enum Method {
     GET("GET"),
-    POST("POST");
+    POST("POST"),
+    PUT("PUT");
 
     private final String method;
 

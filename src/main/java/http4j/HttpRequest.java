@@ -54,12 +54,13 @@ public class HttpRequest {
         connection.setRequestMethod(method.getMethod());
         if (config.isAutoHeaders()) {
             headers.defaultValue("User-Agent", "Http4J/1.0");
+            headers.defaultValue("Content-Type", "application/x-www-form-urlencoded");
         }
 
         headers.defaultValue("Accept", "*/*");
         headers.defaultValue("Connection", "Keep-Alive");
         if (requestBody != null) {
-            if (requestBody.json == null) {
+            if (requestBody.json != null) {
                 headers.defaultValue("Content-Type", "application/x-www-form-urlencoded");
             } else {
                 headers.add("Content-Type", "application/json");
@@ -139,17 +140,5 @@ public class HttpRequest {
         }
 
         return response;
-    }
-
-    public HttpResponse send(Method method, Headers headers, Params params, RequestBody requestBody, Cookies cookies) throws IOException {
-        return this.send(method, headers, params, requestBody, cookies, new HttpConfig());
-    }
-
-    public HttpResponse send(Method method, HttpConfig config) throws IOException {
-        return this.send(method, new Headers(), new Params(), null, new Cookies(), config);
-    }
-
-    public HttpResponse send(Method method) throws IOException {
-        return this.send(method, new Headers(), new Params(), null, new Cookies(), new HttpConfig());
     }
 }

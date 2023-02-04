@@ -32,7 +32,7 @@ public class HttpResponse {
         this.headers = new Headers(map);
     }
 
-    public int getStatusCode() {
+    public final int getStatusCode() {
         return this.status_code;
     }
 
@@ -56,7 +56,8 @@ public class HttpResponse {
         return url;
     }
 
-    public String toString() {
+    @Override
+    public final String toString() {
         return headers + "\n" + cookies;
     }
 }

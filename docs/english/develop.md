@@ -19,7 +19,6 @@ public class Main {
             System.out.println(response.cookies);
             System.out.println(response.headers);
             // Medium Difficulty
-            // The first parameter of the request must be the request address, and other parameter positions can be changed at will, but `HttpConfig` can only be in the last parameter position.
             response = Http4J.post(
                     "http://localhost:80",
                     new Params()
