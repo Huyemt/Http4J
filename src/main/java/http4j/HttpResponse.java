@@ -2,6 +2,7 @@ package http4j;
 
 import http4j.resource.Cookies;
 import http4j.resource.Headers;
+import com.google.gson.Gson;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,10 @@ public class HttpResponse {
         map.remove(null);
         this.cookies = new Cookies(map.getOrDefault("Set-Cookie", null));
         this.headers = new Headers(map);
+    }
+
+    public <T extends Class<?>> T json(T clazz) {
+        return new Gson().fromJson(getHtml(), clazz);
     }
 
     public final int getStatusCode() {
